@@ -1,0 +1,27 @@
+name: Rotate Key Every 24 Hours
+
+on:
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+jobs:
+  rotate-key:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Generate new key
+        run: |
+          KEY="NEVERWIN-$(openssl rand -hex 2 | tr 'a-f' 'A-F')-$(openssl rand -hex 2 | tr 'a-f' 'A-F')"
+          echo "$KEY" > currentkey.txt
+
+      - name: Commit and push
+        run: |
+          git config user.name "NEVERWIN Auto Rotator"
+          git config user.email "actions@github.com"
+          git add currentkey.txt
+          git commit -m "Auto-rotate key"
+          git push
