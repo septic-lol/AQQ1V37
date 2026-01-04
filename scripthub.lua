@@ -1,103 +1,79 @@
--- NEVERWIN Script Hub (Modern UI)
+if not _G.NEVERWIN_AUTH then return end
 
-local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
-local Player = Players.LocalPlayer
+local gui = Instance.new("ScreenGui", game.CoreGui)
 
--- ScreenGui
-local gui = Instance.new("ScreenGui")
-gui.Name = "NeverwinHub"
-gui.Parent = game.CoreGui
-
--- Scale for mobile/pc
 local scale = Instance.new("UIScale", gui)
-scale.Scale = UIS.TouchEnabled and 0.9 or 1
+scale.Scale = UIS.TouchEnabled and 0.8 or 1
 
--- Main Frame
 local main = Instance.new("Frame", gui)
-main.Size = UDim2.new(0, 650, 0, 420)
-main.Position = UDim2.new(0.5, -325, 0.5, -210)
+main.AnchorPoint = Vector2.new(0.5, 0.5)
+main.Position = UDim2.new(0.5, 0, 0.5, 0)
+main.Size = UIS.TouchEnabled and UDim2.new(0.95, 0, 0.85, 0) or UDim2.new(0, 700, 0, 450)
 main.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 main.BorderSizePixel = 0
-main.AnchorPoint = Vector2.new(0.5, 0.5)
+Instance.new("UICorner", main).CornerRadius = UDim.new(0, 16)
 
--- Corner
-Instance.new("UICorner", main).CornerRadius = UDim.new(0, 12)
-
--- Title
 local title = Instance.new("TextLabel", main)
 title.Size = UDim2.new(1, -20, 0, 50)
 title.Position = UDim2.new(0, 10, 0, 10)
-title.Text = "NEVERWIN Script Hub"
-title.TextColor3 = Color3.fromRGB(170, 120, 255)
-title.BackgroundTransparency = 1
+title.Text = "NEVERWIN SCRIPT HUB"
 title.Font = Enum.Font.GothamBold
 title.TextSize = 22
+title.TextColor3 = Color3.fromRGB(170, 120, 255)
+title.BackgroundTransparency = 1
 title.TextXAlignment = Left
 
--- Scroll Area
 local scroll = Instance.new("ScrollingFrame", main)
+scroll.Position = UDim2.new(0, 10, 0, 70)
 scroll.Size = UDim2.new(1, -20, 1, -80)
-scroll.Position = UDim2.new(0, 10, 0, 65)
-scroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+scroll.CanvasSize = UDim2.new()
 scroll.ScrollBarImageTransparency = 0.4
 scroll.BackgroundTransparency = 1
 
--- Grid Layout
 local grid = Instance.new("UIGridLayout", scroll)
-grid.CellSize = UDim2.new(0, 170, 0, 200)
-grid.CellPadding = UDim2.new(0, 15, 0, 15)
-grid.HorizontalAlignment = Center
+grid.CellPadding = UDim2.new(0, 14, 0, 14)
+grid.CellSize = UIS.TouchEnabled
+	and UDim2.new(0.45, 0, 0, 190)
+	or UDim2.new(0, 180, 0, 200)
 
--- Auto resize canvas
+grid.HorizontalAlignment = Center
 grid:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
 	scroll.CanvasSize = UDim2.new(0, 0, 0, grid.AbsoluteContentSize.Y + 20)
 end)
 
--- GAME CARD FUNCTION
-local function createGameCard(name, scriptUrl)
-	local card = Instance.new("Frame", scroll)
-	card.BackgroundColor3 = Color3.fromRGB(28, 28, 34)
-	card.BorderSizePixel = 0
+local function card(name, url)
+	local f = Instance.new("Frame", scroll)
+	f.BackgroundColor3 = Color3.fromRGB(30, 30, 36)
+	f.BorderSizePixel = 0
+	Instance.new("UICorner", f).CornerRadius = UDim.new(0, 12)
 
-	Instance.new("UICorner", card).CornerRadius = UDim.new(0, 10)
+	local t = Instance.new("TextLabel", f)
+	t.Size = UDim2.new(1, -20, 0, 40)
+	t.Position = UDim2.new(0, 10, 0, 15)
+	t.Text = name
+	t.Font = Enum.Font.GothamSemibold
+	t.TextSize = 16
+	t.TextWrapped = true
+	t.TextColor3 = Color3.new(1,1,1)
+	t.BackgroundTransparency = 1
 
-	-- Game Icon (placeholder)
-	local icon = Instance.new("Frame", card)
-	icon.Size = UDim2.new(1, -20, 0, 90)
-	icon.Position = UDim2.new(0, 10, 0, 10)
-	icon.BackgroundColor3 = Color3.fromRGB(40, 40, 50)
-	Instance.new("UICorner", icon).CornerRadius = UDim.new(0, 8)
-
-	-- Game Name
-	local label = Instance.new("TextLabel", card)
-	label.Size = UDim2.new(1, -20, 0, 30)
-	label.Position = UDim2.new(0, 10, 0, 110)
-	label.Text = name
-	label.TextWrapped = true
-	label.TextColor3 = Color3.new(1, 1, 1)
-	label.BackgroundTransparency = 1
-	label.Font = Enum.Font.GothamSemibold
-	label.TextSize = 14
-
-	-- Run Button
-	local run = Instance.new("TextButton", card)
-	run.Size = UDim2.new(1, -20, 0, 35)
-	run.Position = UDim2.new(0, 10, 1, -45)
+	local run = Instance.new("TextButton", f)
+	run.Size = UDim2.new(1, -20, 0, 36)
+	run.Position = UDim2.new(0, 10, 1, -46)
 	run.Text = "RUN"
-	run.BackgroundColor3 = Color3.fromRGB(120, 80, 200)
-	run.TextColor3 = Color3.new(1, 1, 1)
 	run.Font = Enum.Font.GothamBold
 	run.TextSize = 14
-	Instance.new("UICorner", run).CornerRadius = UDim.new(0, 8)
+	run.TextColor3 = Color3.new(1,1,1)
+	run.BackgroundColor3 = Color3.fromRGB(120, 80, 200)
+	Instance.new("UICorner", run).CornerRadius = UDim.new(0, 10)
 
 	run.MouseButton1Click:Connect(function()
-		loadstring(game:HttpGet(scriptUrl))()
+		loadstring(game:HttpGet(url))()
 	end)
 end
 
--- 🔥 ADD YOUR GAMES HERE
-createGameCard("Arsenal", "https://your-arsenal-script.lua")
-createGameCard("Blox Fruits", "https://your-bloxfruits-script.lua")
-createGameCard("Pet Simulator", "https://your-petsim-script.lua")
-createGameCard("Universal", "https://your-universal-script.lua")
+-- ADD SCRIPTS
+card("Arsenal", "https://your-script.lua")
+card("Blox Fruits", "https://your-script.lua")
+card("Universal", "https://your-script.lua")
